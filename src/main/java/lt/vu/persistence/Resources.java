@@ -13,7 +13,7 @@ import javax.persistence.SynchronizationType;
 @ApplicationScoped
 public class Resources {
 
-    @PersistenceUnit(unitName = "PlayersPU")
+    @PersistenceUnit
     private EntityManagerFactory emf;
 
     @Produces
