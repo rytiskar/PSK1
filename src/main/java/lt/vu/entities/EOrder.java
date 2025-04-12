@@ -23,6 +23,6 @@ public class EOrder {
     @ManyToOne(optional = false)
     private Customer customer;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Product> products;
 }

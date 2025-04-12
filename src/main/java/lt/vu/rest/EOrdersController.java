@@ -76,17 +76,15 @@ public class EOrdersController {
 
         eOrdersDAO.persist(newOrder);
 
-        return Response
-                .status(Response.Status.CREATED)
-                .entity(newOrder)
-                .build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
+    @Transactional
     @Path("/{id}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateOrder(@PathParam("id") Long id, EOrderDto eOrderData) {
+    public Response update(@PathParam("id") Long id, EOrderDto eOrderData) {
 
         EOrder existingOrder = eOrdersDAO.findOne(id);
         if (existingOrder == null) {
@@ -107,17 +105,18 @@ public class EOrdersController {
 
         if (eOrderData.getProductIds() != null && !eOrderData.getProductIds().isEmpty()) {
             List<Product> products = productsDAO.findAll(eOrderData.getProductIds());
-            existingOrder.setProducts(products);  // Update the products list
+
+            existingOrder.getProducts().clear();
+            existingOrder.setProducts(products);
         }
 
-        // Optionally update the date if provided (if not, you can leave it unchanged)
         if (eOrderData.getDate() != null) {
             existingOrder.setDate(eOrderData.getDate());
         }
 
         eOrdersDAO.update(existingOrder);
 
-        return Response.ok(existingOrder).build();
+        return Response.ok().build();
     }
 
 
