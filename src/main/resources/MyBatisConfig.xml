@@ -4,19 +4,23 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <typeAlias type="lt.vu.mybatis.model.Team" alias="Team"/>
-        <typeAlias type="lt.vu.mybatis.model.Player" alias="Player"/>
+        <typeAlias type="lt.vu.mybatis.model.Customer" alias="Customer"/>
+        <typeAlias type="lt.vu.mybatis.model.Eorder" alias="Eorder"/>
+        <typeAlias type="lt.vu.mybatis.model.EorderProduct" alias="EorderProduct"/>
+        <typeAlias type="lt.vu.mybatis.model.Product" alias="Product"/>
     </typeAliases>
     <environments default="development">
         <environment id="development">
             <transactionManager type="MANAGED"/>
             <dataSource type="JNDI">
-                <property name="data_source" value="PlayersDataSource"/>
+                <property name="data_source" value="ShopDataSource"/>
             </dataSource>
         </environment>
     </environments>
     <mappers>
-        <mapper resource="mybatis.xml/TeamMapper.xml"/>
-        <mapper resource="mybatis.xml/PlayerMapper.xml"/>
+        <mapper resource="lt/vu/mybatis/xml/CustomerMapper.xml"/>
+        <mapper resource="lt/vu/mybatis/xml/EorderMapper.xml"/>
+        <mapper resource="lt/vu/mybatis/xml/EorderProductMapper.xml"/>
+        <mapper resource="lt/vu/mybatis/xml/ProductMapper.xml"/>
     </mappers>
 </configuration>
