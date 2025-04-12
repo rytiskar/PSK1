@@ -5,11 +5,9 @@ import lombok.Setter;
 import lt.vu.entities.Product;
 import lt.vu.persistence.ProductsDAO;
 import lt.vu.rest.contracts.ProductDto;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
-import javax.print.attribute.standard.Media;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +30,7 @@ public class ProductsController {
         }
 
         ProductDto productDto = new ProductDto();
+        productDto.setId(product.getId());
         productDto.setName(product.getProductName());
         productDto.setPrice(product.getPrice());
 
@@ -50,6 +49,9 @@ public class ProductsController {
         newProduct.setPrice(productData.getPrice());
 
         productsDAO.persist(newProduct);
+
+        // Update the DTO with the generated id
+        productData.setId(newProduct.getId());
 
         return Response
                 .status(Response.Status.CREATED)
