@@ -5,7 +5,6 @@ import lombok.Setter;
 import lt.vu.entities.Product;
 import lt.vu.persistence.ProductsDAO;
 import lt.vu.rest.contracts.ProductDto;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
