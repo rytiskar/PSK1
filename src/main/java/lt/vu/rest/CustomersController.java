@@ -3,8 +3,12 @@ package lt.vu.rest;
 import lombok.Getter;
 import lombok.Setter;
 import lt.vu.entities.Customer;
+import lt.vu.entities.EOrder;
 import lt.vu.persistence.CustomersDAO;
+import lt.vu.persistence.EOrdersDAO;
 import lt.vu.rest.contracts.CustomerDto;
+import lt.vu.rest.contracts.EOrderDto;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -21,6 +25,10 @@ public class CustomersController {
     @Inject
     @Setter @Getter
     private CustomersDAO customersDAO;
+
+    @Inject
+    @Setter @Getter
+    private EOrdersDAO eOrdersDAO;
 
     @Path("/{id}")
     @GET
@@ -60,6 +68,38 @@ public class CustomersController {
 
         return Response.ok(customerDtos).build();
     }
+
+    @Path("/{id}/orders")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustomerOrders(@PathParam("id") final Long id) {
+        List<EOrder> orders = eOrdersDAO.findAll();
+        if (orders == null || orders.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<EOrderDto> orderDtos = orders.stream()
+                .filter(order -> order.getCustomer().getId().equals(id)) // Only include matching customer ID
+                .map(order -> {
+                    EOrderDto orderDto = new EOrderDto();
+                    orderDto.setId(order.getId());
+                    orderDto.setCustomerId(order.getCustomer().getId());
+                    orderDto.setDate(order.getDate());
+
+                    List<Long> productIds = eOrdersDAO.selectAllOrderProductIds(order.getId());
+                    orderDto.setProductIds(productIds);
+
+                    return orderDto;
+                })
+                .collect(Collectors.toList());
+
+        if (orderDtos.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(orderDtos).build();
+    }
+
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
