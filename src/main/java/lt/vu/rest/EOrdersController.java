@@ -79,45 +79,4 @@ public class EOrdersController {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @Transactional
-    @Path("/{id}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, EOrderDto eOrderData) {
-
-        EOrder existingOrder = eOrdersDAO.findOne(id);
-        if (existingOrder == null) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Order with ID " + id + " not found.")
-                    .build();
-        }
-
-        if (eOrderData.getCustomerId() != null) {
-            Customer customer = customersDAO.findOne(eOrderData.getCustomerId());
-            if (customer == null) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("Customer with ID " + eOrderData.getCustomerId() + " not found.")
-                        .build();
-            }
-            existingOrder.setCustomer(customer);
-        }
-
-        if (eOrderData.getProductIds() != null && !eOrderData.getProductIds().isEmpty()) {
-            List<Product> products = productsDAO.findAll(eOrderData.getProductIds());
-
-            existingOrder.getProducts().clear();
-            existingOrder.setProducts(products);
-        }
-
-        if (eOrderData.getDate() != null) {
-            existingOrder.setDate(eOrderData.getDate());
-        }
-
-        eOrdersDAO.update(existingOrder);
-
-        return Response.ok().build();
-    }
-
-
 }

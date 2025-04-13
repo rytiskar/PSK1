@@ -12,6 +12,8 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Path("/products")
@@ -37,6 +39,28 @@ public class ProductsController {
         return Response.ok(productDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll() {
+        List<Product> products = productsDAO.findAll();
+
+        if (products == null || products.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No products found.")
+                    .build();
+        }
+
+        List<ProductDto> productDtos = products.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getProductName());
+            dto.setPrice(product.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return Response.ok(productDtos).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -59,29 +83,5 @@ public class ProductsController {
                 .build();
     }
 
-    @Path("/{id}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response update(@PathParam("id") final Long id, ProductDto productData) {
-        try {
-            Product existingProduct = productsDAO.findOne(id);
 
-            if (existingProduct == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            existingProduct.setProductName(productData.getName());
-            existingProduct.setPrice(productData.getPrice());
-
-            productsDAO.update(existingProduct);
-
-            return Response.ok().build();
-
-        } catch (OptimisticLockException ole) {
-
-            return Response.status(Response.Status.CONFLICT).build();
-
-        }
-    }
 }

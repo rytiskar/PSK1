@@ -5,6 +5,7 @@ import lt.vu.entities.Customer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @ApplicationScoped
 public class CustomersDAO {
@@ -19,7 +20,8 @@ public class CustomersDAO {
         return em.find(Customer.class, id);
     }
 
-    public Customer update(Customer customer){
-        return em.merge(customer);
+    public List<Customer> findAll() {
+        return em.createQuery("SELECT c FROM Customer c", Customer.class)
+                .getResultList();
     }
 }

@@ -6,11 +6,12 @@ import lt.vu.mybatis.model.Customer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Path("/myBatis/customers")
@@ -37,6 +38,27 @@ public class MyBatisCustomersController {
         return Response.ok(customerDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll() {
+        List<Customer> customers = myBatisCustomersDAO.findAll();
+
+        if (customers == null || customers.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<CustomerDto> customerDtos = customers.stream().map(customer -> {
+            CustomerDto customerDto = new CustomerDto();
+            customerDto.setId(customer.getId());
+            customerDto.setFirstName(customer.getFirstname());
+            customerDto.setLastName(customer.getLastname());
+            customerDto.setEmail(customer.getEmail());
+            return customerDto;
+        }).collect(Collectors.toList());
+
+        return Response.ok(customerDtos).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -58,32 +80,5 @@ public class MyBatisCustomersController {
                 .status(Response.Status.CREATED)
                 .entity(customerData)
                 .build();
-    }
-
-    @Path("/{id}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response update(@PathParam("id") final Long id, CustomerDto customerData) {
-        try {
-            Customer existingCustomer = myBatisCustomersDAO.findOne(id);
-
-            if (existingCustomer == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            existingCustomer.setFirstname(customerData.getFirstName());
-            existingCustomer.setLastname(customerData.getLastName());
-            existingCustomer.setEmail(customerData.getEmail());
-
-            myBatisCustomersDAO.update(existingCustomer);
-
-            return Response.ok().build();
-
-        } catch (OptimisticLockException ole) {
-
-            return Response.status(Response.Status.CONFLICT).build();
-
-        }
     }
 }

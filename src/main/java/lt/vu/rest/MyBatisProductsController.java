@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Path("myBatis/products")
@@ -35,6 +37,28 @@ public class MyBatisProductsController {
         return Response.ok(productDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllProducts() {
+        List<Product> products = myBatisProductsDAO.findAll();
+
+        if (products == null || products.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No products found.")
+                    .build();
+        }
+
+        List<ProductDto> productDtos = products.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setId(product.getId());
+            dto.setName(product.getProductname());
+            dto.setPrice(product.getPrice());
+            return dto;
+        }).collect(Collectors.toList());
+
+        return Response.ok(productDtos).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -55,31 +79,5 @@ public class MyBatisProductsController {
                 .status(Response.Status.CREATED)
                 .entity(productData)
                 .build();
-    }
-
-    @Path("/{id}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response update(@PathParam("id") final Long id, ProductDto productData) {
-        try {
-            Product existingProduct = myBatisProductsDAO.findOne(id);
-
-            if (existingProduct == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-
-            existingProduct.setProductname(productData.getName());
-            existingProduct.setPrice(productData.getPrice());
-
-            myBatisProductsDAO.update(existingProduct);
-
-            return Response.ok().build();
-
-        } catch (OptimisticLockException ole) {
-
-            return Response.status(Response.Status.CONFLICT).build();
-
-        }
     }
 }

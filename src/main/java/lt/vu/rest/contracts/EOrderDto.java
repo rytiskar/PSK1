@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class EOrderDto {
+    private Long id;
 
     private Long customerId;
 

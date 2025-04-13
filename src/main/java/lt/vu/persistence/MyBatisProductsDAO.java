@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class MyBatisProductsDAO {
@@ -24,9 +25,8 @@ public class MyBatisProductsDAO {
         return mapper.selectByPrimaryKey(id);
     }
 
-    public Product update(Product product) {
+    public List<Product> findAll() {
         ProductMapper mapper = sqlSession.getMapper(ProductMapper.class);
-        mapper.updateByPrimaryKey(product);
-        return product;
+        return mapper.selectAll();
     }
 }
