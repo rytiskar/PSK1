@@ -16,20 +16,36 @@ const HomePage = () => {
 
     navigate('/add-customer');
   };
-
+  
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Customer List</h1>
       <button onClick={handleAddNewCustomer}>Add New Customer</button>
-      <ul>
-        {customers.map((customer) => (
-          <li key={customer.id}>
-            <Link to={`/customers/${customer.id}`}>
-              {customer.firstName} {customer.lastName}
-            </Link>
-          </li>
-        ))}
-      </ul>
+  
+      <table border="1" cellPadding="10" cellSpacing="0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers.map((customer) => (
+            <tr key={customer.id}>
+              <td>{customer.id}</td>
+              <td>{customer.firstName}</td>
+              <td>{customer.lastName}</td>
+              <td>{customer.email}</td>
+              <td>
+                <Link to={`/customers/${customer.id}`}>View</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
