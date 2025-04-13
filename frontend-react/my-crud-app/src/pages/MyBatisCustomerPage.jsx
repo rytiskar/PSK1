@@ -8,13 +8,13 @@ const CustomerPage = () => {
 
   useEffect(() => {
     // Fetch customer info
-    fetch(`http://localhost:8180/Shop/api/customers/${id}`)
+    fetch(`http://localhost:8180/Shop/api/myBatis/customers/${id}`)
       .then((res) => res.json())
       .then((data) => setCustomer(data))
       .catch((err) => console.error('Failed to fetch customer:', err));
 
     // Fetch customer orders
-    fetch(`http://localhost:8180/Shop/api/customers/${id}/orders`)
+    fetch(`http://localhost:8180/Shop/api/myBatis/customers/${id}/orders`)
       .then((res) => res.json())
       .then((data) => setOrders(data))
       .catch((err) => console.error('Failed to fetch orders:', err));
@@ -44,7 +44,7 @@ const CustomerPage = () => {
                 <td>{order.id}</td> {/* Order ID */}
                 <td>{order.date}</td> {/* Order Date */}
                 <td>
-                  <Link to={`/jpa/orders/${order.id}`}>View</Link>
+                  <Link to={`/myBatis/orders/${order.id}`}>View</Link>
                 </td>
               </tr>
             ))}
@@ -53,7 +53,7 @@ const CustomerPage = () => {
       )}
   
       <br />
-      <Link to={`/jpa/customers/${id}/order`}>
+      <Link to={`/myBatis/customers/${id}/order`}>
         <button>Create Order</button>
       </Link>
     </div>

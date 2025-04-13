@@ -1,8 +1,13 @@
 package lt.vu.rest;
 
+import lt.vu.entities.EOrder;
+import lt.vu.mybatis.model.Eorder;
+import lt.vu.mybatis.model.EorderProduct;
 import lt.vu.persistence.MyBatisCustomersDAO;
+import lt.vu.persistence.MyBatisEOrdersDAO;
 import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.mybatis.model.Customer;
+import lt.vu.rest.contracts.EOrderDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,6 +24,8 @@ public class MyBatisCustomersController {
 
     @Inject
     private MyBatisCustomersDAO myBatisCustomersDAO;
+    @Inject
+    private MyBatisEOrdersDAO myBatisEOrdersDAO;
 
     @Path("/{id}")
     @GET
@@ -57,6 +64,41 @@ public class MyBatisCustomersController {
         }).collect(Collectors.toList());
 
         return Response.ok(customerDtos).build();
+    }
+
+    @Path("/{id}/orders")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustomerOrders(@PathParam("id") final Long id) {
+        List<Eorder> orders = myBatisEOrdersDAO.findAll();
+        if (orders == null || orders.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<EOrderDto> orderDtos = orders.stream()
+                .filter(order -> order.getCustomerId().equals(id)) // Only include matching customer ID
+                .map(order -> {
+                    EOrderDto orderDto = new EOrderDto();
+                    orderDto.setId(order.getId());
+                    orderDto.setCustomerId(order.getCustomerId());
+                    orderDto.setDate(order.getDate());
+
+                    List<Long> productIds = myBatisEOrdersDAO.SelectAllOrderProducts()
+                            .stream()
+                            .map(EorderProduct::getProductsId)
+                            .collect(Collectors.toList());
+
+                    orderDto.setProductIds(productIds);
+
+                    return orderDto;
+                })
+                .collect(Collectors.toList());
+
+        if (orderDtos.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.ok(orderDtos).build();
     }
 
     @POST
