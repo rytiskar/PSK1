@@ -6,6 +6,7 @@ import lt.vu.mybatis.model.Customer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,9 +37,6 @@ public class MyBatisCustomersController {
         return Response.ok(customerDto).build();
     }
 
-
-    // This endpoint isn't working yet
-    // Error updating database.  Cause: org.h2.jdbc.JdbcSQLException: NULL not allowed for column "ID"; SQL statement
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,7 +45,6 @@ public class MyBatisCustomersController {
 
         Customer newCustomer = new Customer();
 
-        // newCustomer.setId(System.currentTimeMillis());
         newCustomer.setFirstname(customerData.getFirstName());
         newCustomer.setLastname(customerData.getLastName());
         newCustomer.setEmail(customerData.getEmail());
@@ -63,4 +60,30 @@ public class MyBatisCustomersController {
                 .build();
     }
 
+    @Path("/{id}")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response update(@PathParam("id") final Long id, CustomerDto customerData) {
+        try {
+            Customer existingCustomer = myBatisCustomersDAO.findOne(id);
+
+            if (existingCustomer == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            existingCustomer.setFirstname(customerData.getFirstName());
+            existingCustomer.setLastname(customerData.getLastName());
+            existingCustomer.setEmail(customerData.getEmail());
+
+            myBatisCustomersDAO.update(existingCustomer);
+
+            return Response.ok().build();
+
+        } catch (OptimisticLockException ole) {
+
+            return Response.status(Response.Status.CONFLICT).build();
+
+        }
+    }
 }
