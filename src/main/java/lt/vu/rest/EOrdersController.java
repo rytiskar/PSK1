@@ -5,10 +5,13 @@ import lombok.Setter;
 import lt.vu.entities.Customer;
 import lt.vu.entities.EOrder;
 import lt.vu.entities.Product;
+import lt.vu.mybatis.model.Eorder;
+import lt.vu.mybatis.model.EorderProduct;
 import lt.vu.persistence.CustomersDAO;
 import lt.vu.persistence.EOrdersDAO;
 import lt.vu.persistence.ProductsDAO;
 import lt.vu.rest.contracts.EOrderDto;
+import lt.vu.rest.contracts.ProductDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -53,6 +56,42 @@ public class EOrdersController {
         return Response.ok(orderDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll() {
+
+        List<EOrder> orders = eOrdersDAO.findAll();
+        if (orders == null || orders.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<EOrderDto> orderDtos = orders.stream().map(order -> {
+            EOrderDto orderDto = new EOrderDto();
+
+            orderDto.setCustomerId(order.getId());
+            orderDto.setCustomerId(order.getCustomer().getId());
+            orderDto.setDate(order.getDate());
+
+            List<Long> productIds = eOrdersDAO.selectAllOrderProductIds(order.getId());
+
+            orderDto.setProductIds(productIds);
+
+            return orderDto;
+        }).collect(Collectors.toList());
+
+        return Response.ok(orderDtos).build();
+    }
+
+    @Path("/{id}/products")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrderProducts(@PathParam("id") final Long id) {
+
+        List<Long> productIds = eOrdersDAO.selectAllOrderProductIds(id);
+
+        return Response.ok(productIds).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -77,6 +116,38 @@ public class EOrdersController {
         eOrdersDAO.persist(newOrder);
 
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @Transactional
+    @Path("/{id}/addProduct")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addProduct(@PathParam("id") Long id, ProductDto product) {
+
+        EOrder existingOrder = eOrdersDAO.findOne(id);
+        if (existingOrder == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Order with ID " + id + " not found.")
+                    .build();
+        }
+
+        List<Long> existingProductIds = productsDAO.findAll()
+                .stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+
+        if (!existingProductIds.contains(product.getId())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Product id is invalid.")
+                    .build();
+        }
+
+        Product existingProduct = productsDAO.findOne(product.getId());
+
+        eOrdersDAO.addProductToOrder(id, existingProduct);
+
+        return Response.ok().build();
     }
 
 }
