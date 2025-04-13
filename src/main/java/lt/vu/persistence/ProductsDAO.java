@@ -5,6 +5,7 @@ import lt.vu.entities.Product;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -24,6 +25,10 @@ public class ProductsDAO {
         return em.find(Product.class, id);
     }
 
+    public List<Product> findAll() {
+        return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+    }
+
     public List<Product> findAll(List<Long> ids){
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
@@ -37,9 +42,5 @@ public class ProductsDAO {
 
         // Execute the query and get the results
         return em.createQuery(query).getResultList();
-    }
-
-    public Product update(Product product){
-        return em.merge(product);
     }
 }

@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Path("/myBatis/customers")
@@ -36,9 +38,27 @@ public class MyBatisCustomersController {
         return Response.ok(customerDto).build();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAll() {
+        List<Customer> customers = myBatisCustomersDAO.findAll();
 
-    // This endpoint isn't working yet
-    // Error updating database.  Cause: org.h2.jdbc.JdbcSQLException: NULL not allowed for column "ID"; SQL statement
+        if (customers == null || customers.isEmpty()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        List<CustomerDto> customerDtos = customers.stream().map(customer -> {
+            CustomerDto customerDto = new CustomerDto();
+            customerDto.setId(customer.getId());
+            customerDto.setFirstName(customer.getFirstname());
+            customerDto.setLastName(customer.getLastname());
+            customerDto.setEmail(customer.getEmail());
+            return customerDto;
+        }).collect(Collectors.toList());
+
+        return Response.ok(customerDtos).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,7 +67,6 @@ public class MyBatisCustomersController {
 
         Customer newCustomer = new Customer();
 
-        // newCustomer.setId(System.currentTimeMillis());
         newCustomer.setFirstname(customerData.getFirstName());
         newCustomer.setLastname(customerData.getLastName());
         newCustomer.setEmail(customerData.getEmail());
@@ -62,5 +81,4 @@ public class MyBatisCustomersController {
                 .entity(customerData)
                 .build();
     }
-
 }

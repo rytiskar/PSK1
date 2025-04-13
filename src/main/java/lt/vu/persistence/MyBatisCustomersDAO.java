@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class MyBatisCustomersDAO {
@@ -23,10 +24,9 @@ public class MyBatisCustomersDAO {
         return mapper.selectByPrimaryKey(id);
     }
 
-    public Customer update(Customer customer) {
+    public List<Customer> findAll() {
         CustomerMapper mapper = sqlSession.getMapper(CustomerMapper.class);
-        mapper.updateByPrimaryKey(customer);
-        return customer;
+        return mapper.selectAll();
     }
 
 }

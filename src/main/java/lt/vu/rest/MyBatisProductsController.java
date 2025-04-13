@@ -1,10 +1,9 @@
 package lt.vu.rest;
 
-import lombok.Getter;
-import lombok.Setter;
-import lt.vu.entities.Product;
-import lt.vu.persistence.ProductsDAO;
+import lt.vu.mybatis.model.Product;
+import lt.vu.persistence.MyBatisProductsDAO;
 import lt.vu.rest.contracts.ProductDto;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.OptimisticLockException;
@@ -16,24 +15,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-@Path("/products")
-public class ProductsController {
+@Path("myBatis/products")
+public class MyBatisProductsController {
     @Inject
-    @Setter @Getter
-    private ProductsDAO productsDAO;
+    private MyBatisProductsDAO myBatisProductsDAO;
 
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") final Long id) {
-        Product product = productsDAO.findOne(id);
+        Product product = myBatisProductsDAO.findOne(id);
         if (product == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
         ProductDto productDto = new ProductDto();
         productDto.setId(product.getId());
-        productDto.setName(product.getProductName());
+        productDto.setName(product.getProductname());
         productDto.setPrice(product.getPrice());
 
         return Response.ok(productDto).build();
@@ -41,8 +39,8 @@ public class ProductsController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
-        List<Product> products = productsDAO.findAll();
+    public Response getAllProducts() {
+        List<Product> products = myBatisProductsDAO.findAll();
 
         if (products == null || products.isEmpty()) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -53,7 +51,7 @@ public class ProductsController {
         List<ProductDto> productDtos = products.stream().map(product -> {
             ProductDto dto = new ProductDto();
             dto.setId(product.getId());
-            dto.setName(product.getProductName());
+            dto.setName(product.getProductname());
             dto.setPrice(product.getPrice());
             return dto;
         }).collect(Collectors.toList());
@@ -69,10 +67,10 @@ public class ProductsController {
 
         Product newProduct = new Product();
 
-        newProduct.setProductName(productData.getName());
+        newProduct.setProductname(productData.getName());
         newProduct.setPrice(productData.getPrice());
 
-        productsDAO.persist(newProduct);
+        myBatisProductsDAO.persist(newProduct);
 
         // Update the DTO with the generated id
         productData.setId(newProduct.getId());
@@ -82,6 +80,4 @@ public class ProductsController {
                 .entity(productData)
                 .build();
     }
-
-
 }
