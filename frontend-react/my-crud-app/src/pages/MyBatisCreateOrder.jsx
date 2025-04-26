@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
 
 const CreateOrderPage = () => {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetch('http://localhost:8180/Shop/api/myBatis/products')
@@ -36,7 +38,7 @@ const CreateOrderPage = () => {
         console.log("Response from server: ", res);
         res.json()
       })
-      .then(() => alert('Order created!'))
+      .then(() => navigate('/'))
       .catch((err) => console.error('Failed to create order:', err));
   };
 

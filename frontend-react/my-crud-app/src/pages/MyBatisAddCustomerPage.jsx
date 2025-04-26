@@ -23,9 +23,7 @@ const AddCustomerPage = () => {
             },
             body: JSON.stringify(newCustomer),
           })
-            .then((res) => res.json())
             .then((data) => {
-              // Redirect to the home page or customer list after successful creation
               navigate('/');
             })
             .catch((err) => console.error('Failed to create customer:', err));

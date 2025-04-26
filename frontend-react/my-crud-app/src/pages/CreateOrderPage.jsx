@@ -36,7 +36,7 @@ const CreateOrderPage = () => {
         console.log("Response from server: ", res);
         res.json()
       })
-      .then(() => alert('Order created!'))
+      .then(() => navigate('/'))
       .catch((err) => console.error('Failed to create order:', err));
   };
 

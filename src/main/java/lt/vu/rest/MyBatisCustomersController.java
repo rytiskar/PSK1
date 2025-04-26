@@ -24,24 +24,32 @@ import java.util.stream.Collectors;
 public class MyBatisCustomersController {
 
     @Inject
-    private MyBatisCustomersDAO myBatisCustomersDAO;
-    @Inject
-    private MyBatisEOrdersDAO myBatisEOrdersDAO;
-
-    @Inject
     private CustomerService customerService;
 
     @Path("/withOrdersAndProducts")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCustomersWithOrdersAndProducts() {
+    public Response getCustomersWithTheirOrdersAndProducts() {
 
         List<CustomerWithOrdersAndProductsDto> customers = customerService.getAllCustomersWithTheirOrdersAndProducts();
 
         return Response.ok(customers).build();
     }
 
-    @Path("/{id}")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Transactional
+    public Response create(CustomerDto customerData) {
+
+        customerService.Create(customerData);
+
+        return Response
+                .status(Response.Status.CREATED)
+                .build();
+    }
+
+/*    @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") final Long id) {
@@ -113,28 +121,5 @@ public class MyBatisCustomersController {
         }
 
         return Response.ok(orderDtos).build();
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
-    public Response create(CustomerDto customerData) {
-
-        Customer newCustomer = new Customer();
-
-        newCustomer.setFirstname(customerData.getFirstName());
-        newCustomer.setLastname(customerData.getLastName());
-        newCustomer.setEmail(customerData.getEmail());
-
-        myBatisCustomersDAO.persist(newCustomer);
-
-        // Update the DTO with the generated id
-        customerData.setId(newCustomer.getId());
-
-        return Response
-                .status(Response.Status.CREATED)
-                .entity(customerData)
-                .build();
-    }
+    }*/
 }
