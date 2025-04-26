@@ -12,6 +12,23 @@
     <result column="FIRSTNAME" jdbcType="VARCHAR" property="firstname" />
     <result column="LASTNAME" jdbcType="VARCHAR" property="lastname" />
   </resultMap>
+  <resultMap id="CustomerWithOrdersAndProductsResultMap" type="lt.vu.mybatis.model.CustomerWithOrdersAndProducts">
+    <id property="customerId" column="customer_id"/>
+    <result property="customerFirstName" column="customer_first_name"/>
+    <result property="customerLastName" column="customer_last_name"/>
+    <result property="customerEmail" column="customer_email"/>
+
+    <collection property="orders" ofType="lt.vu.mybatis.model.CustomerWithOrdersAndProducts$OrderWithProducts">
+      <id property="orderId" column="order_id"/>
+      <result property="orderDate" column="order_date"/>
+
+      <collection property="products" ofType="lt.vu.mybatis.model.CustomerWithOrdersAndProducts$ProductInfo">
+        <id property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="price" column="product_price"/>
+      </collection>
+    </collection>
+  </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--
       WARNING - @mbg.generated
@@ -62,5 +79,24 @@
     -->
     select ID, EMAIL, FIRSTNAME, LASTNAME
     from PUBLIC.CUSTOMER
+  </select>
+  <select id="selectCustomersWithOrdersAndProducts" resultMap="CustomerWithOrdersAndProductsResultMap">
+    SELECT
+      c.ID AS customer_id,
+      c.FIRSTNAME AS customer_first_name,
+      c.LASTNAME AS customer_last_name,
+      c.EMAIL AS customer_email,
+
+      o.ID AS order_id,
+      o.DATE AS order_date,
+
+      p.ID AS product_id,
+      p.PRODUCTNAME AS product_name,
+      p.PRICE AS product_price
+
+    FROM CUSTOMER c
+    LEFT JOIN EORDER o ON o.CUSTOMER_ID = c.id
+    LEFT JOIN EORDER_PRODUCT op ON op.ORDERS_ID = o.id
+    LEFT JOIN PRODUCT p ON p.id = op.PRODUCTS_ID
   </select>
 </mapper>

@@ -2,6 +2,7 @@ package lt.vu.mybatis.dao;
 
 import java.util.List;
 import lt.vu.mybatis.model.Customer;
+import lt.vu.mybatis.model.CustomerWithOrdersAndProducts;
 
 public interface CustomerMapper {
     /**
@@ -43,4 +44,6 @@ public interface CustomerMapper {
      * @mbg.generated Sat Apr 12 14:32:24 EEST 2025
      */
     int updateByPrimaryKey(Customer record);
+
+    List<CustomerWithOrdersAndProducts> selectCustomersWithOrdersAndProducts();
 }

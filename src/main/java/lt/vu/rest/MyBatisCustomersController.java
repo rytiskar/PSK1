@@ -1,13 +1,14 @@
 package lt.vu.rest;
 
-import lt.vu.entities.EOrder;
 import lt.vu.mybatis.model.Eorder;
 import lt.vu.mybatis.model.EorderProduct;
 import lt.vu.persistence.MyBatisCustomersDAO;
 import lt.vu.persistence.MyBatisEOrdersDAO;
 import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.mybatis.model.Customer;
+import lt.vu.rest.contracts.CustomerWithOrdersAndProductsDto;
 import lt.vu.rest.contracts.EOrderDto;
+import lt.vu.services.CustomerService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,6 +27,19 @@ public class MyBatisCustomersController {
     private MyBatisCustomersDAO myBatisCustomersDAO;
     @Inject
     private MyBatisEOrdersDAO myBatisEOrdersDAO;
+
+    @Inject
+    private CustomerService customerService;
+
+    @Path("/withOrdersAndProducts")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustomersWithOrdersAndProducts() {
+
+        List<CustomerWithOrdersAndProductsDto> customers = customerService.getAllCustomersWithTheirOrdersAndProducts();
+
+        return Response.ok(customers).build();
+    }
 
     @Path("/{id}")
     @GET

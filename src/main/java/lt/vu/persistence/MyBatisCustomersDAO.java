@@ -2,6 +2,7 @@ package lt.vu.persistence;
 
 import lt.vu.mybatis.dao.CustomerMapper;
 import lt.vu.mybatis.model.Customer;
+import lt.vu.mybatis.model.CustomerWithOrdersAndProducts;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +28,11 @@ public class MyBatisCustomersDAO {
     public List<Customer> findAll() {
         CustomerMapper mapper = sqlSession.getMapper(CustomerMapper.class);
         return mapper.selectAll();
+    }
+
+    public List<CustomerWithOrdersAndProducts> getCustomersWithOrdersAndProducts() {
+        CustomerMapper mapper = sqlSession.getMapper(CustomerMapper.class);
+        return mapper.selectCustomersWithOrdersAndProducts();
     }
 
 }
