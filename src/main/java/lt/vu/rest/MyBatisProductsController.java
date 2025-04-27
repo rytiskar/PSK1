@@ -1,7 +1,7 @@
 package lt.vu.rest;
 
 import lt.vu.rest.contracts.ProductDto;
-import lt.vu.services.ProductService;
+import lt.vu.services.MyBatisProductService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,13 +15,13 @@ import java.util.List;
 public class MyBatisProductsController {
 
     @Inject
-    private ProductService productService;
+    private MyBatisProductService productService;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllProducts() {
 
-        List<ProductDto> products = productService.myBatisGetAllProducts();
+        List<ProductDto> products = productService.getAllProducts();
 
         return Response.ok(products).build();
     }
@@ -31,7 +31,7 @@ public class MyBatisProductsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(ProductDto productData) {
 
-        productService.myBatisCreateProduct(productData);
+        productService.createProduct(productData);
 
         return Response.status(Response.Status.CREATED).build();
     }

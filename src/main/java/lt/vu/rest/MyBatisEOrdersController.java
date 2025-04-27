@@ -2,7 +2,7 @@ package lt.vu.rest;
 
 import lt.vu.rest.contracts.EOrderDto;
 import lt.vu.rest.contracts.ProductDto;
-import lt.vu.services.EOrderService;
+import lt.vu.services.MyBatisEOrderService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,14 +16,14 @@ import java.util.List;
 public class MyBatisEOrdersController {
 
     @Inject
-    private EOrderService orderService;
+    private MyBatisEOrderService orderService;
 
     @Path("/{id}/products")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrderProducts(@PathParam("id") final Long orderId) {
 
-        List<Long> orderProductIds = orderService.myBatisGetOrderProductIds(orderId);
+        List<Long> orderProductIds = orderService.getOrderProductIds(orderId);
 
         return Response.ok(orderProductIds).build();
     }
@@ -33,7 +33,7 @@ public class MyBatisEOrdersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(EOrderDto eOrderData) {
 
-        orderService.myBatisCreateOrder(eOrderData);
+        orderService.createOrder(eOrderData);
 
         return Response.status(Response.Status.CREATED).build();
     }
@@ -44,7 +44,7 @@ public class MyBatisEOrdersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addProductToOrder(@PathParam("id") Long orderId, ProductDto product) {
 
-        orderService.myBatisAddProductToOrder(orderId, product.getId());
+        orderService.addProductToOrder(orderId, product.getId());
 
         return Response.ok().build();
     }

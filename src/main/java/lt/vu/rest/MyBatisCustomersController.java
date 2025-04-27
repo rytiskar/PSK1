@@ -2,7 +2,7 @@ package lt.vu.rest;
 
 import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.rest.contracts.CustomerWithOrdersAndProductsDto;
-import lt.vu.services.CustomerService;
+import lt.vu.services.MyBatisCustomerService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,14 +16,14 @@ import java.util.List;
 public class MyBatisCustomersController {
 
     @Inject
-    private CustomerService customerService;
+    private MyBatisCustomerService customerService;
 
     @Path("/withOrdersAndProducts")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomersWithTheirOrdersAndProducts() {
 
-        List<CustomerWithOrdersAndProductsDto> customers = customerService.myBatisGetAllCustomersWithTheirOrdersAndProducts();
+        List<CustomerWithOrdersAndProductsDto> customers = customerService.getAllCustomersWithTheirOrdersAndProducts();
 
         return Response.ok(customers).build();
     }
@@ -33,7 +33,7 @@ public class MyBatisCustomersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(CustomerDto customerData) {
 
-        customerService.myBatisCreate(customerData);
+        customerService.create(customerData);
 
         return Response.status(Response.Status.CREATED).build();
     }
