@@ -23,7 +23,7 @@ public class MyBatisEOrdersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrderProducts(@PathParam("id") final Long orderId) {
 
-        List<Long> orderProductIds = orderService.getOrderProductIds(orderId);
+        List<Long> orderProductIds = orderService.myBatisGetOrderProductIds(orderId);
 
         return Response.ok(orderProductIds).build();
     }
@@ -33,7 +33,7 @@ public class MyBatisEOrdersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(EOrderDto eOrderData) {
 
-        orderService.createOrder(eOrderData);
+        orderService.myBatisCreateOrder(eOrderData);
 
         return Response.status(Response.Status.CREATED).build();
     }
@@ -44,7 +44,7 @@ public class MyBatisEOrdersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addProductToOrder(@PathParam("id") Long orderId, ProductDto product) {
 
-        orderService.addProductToOrder(orderId, product.getId());
+        orderService.myBatisAddProductToOrder(orderId, product.getId());
 
         return Response.ok().build();
     }

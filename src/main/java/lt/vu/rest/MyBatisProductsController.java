@@ -21,7 +21,7 @@ public class MyBatisProductsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllProducts() {
 
-        List<ProductDto> products = productService.getAllProducts();
+        List<ProductDto> products = productService.myBatisGetAllProducts();
 
         return Response.ok(products).build();
     }
@@ -31,7 +31,7 @@ public class MyBatisProductsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(ProductDto productData) {
 
-        productService.createProduct(productData);
+        productService.myBatisCreateProduct(productData);
 
         return Response.status(Response.Status.CREATED).build();
     }

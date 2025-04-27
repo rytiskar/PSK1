@@ -35,7 +35,7 @@ public class EOrderService {
     @Setter @Getter
     private MyBatisProductsDAO myBatisProductsDAO;
 
-    public List<Long> getOrderProductIds(Long orderId) {
+    public List<Long> myBatisGetOrderProductIds(Long orderId) {
 
         return myBatisEOrdersDAO.SelectAllOrderProducts()
                 .stream()
@@ -46,7 +46,7 @@ public class EOrderService {
     }
 
     @Transactional
-    public void createOrder(EOrderDto eOrderData) {
+    public void myBatisCreateOrder(EOrderDto eOrderData) {
 
         Customer customer = myBatisCustomersDAO.findOne(eOrderData.getCustomerId());
         if (customer == null) {
@@ -80,7 +80,7 @@ public class EOrderService {
     }
 
     @Transactional
-    public void addProductToOrder(Long orderId, Long productId) {
+    public void myBatisAddProductToOrder(Long orderId, Long productId) {
 
         Eorder existingOrder = myBatisEOrdersDAO.findOne(orderId);
         if (existingOrder == null) {

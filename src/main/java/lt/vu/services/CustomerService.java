@@ -19,7 +19,7 @@ public class CustomerService {
     @Inject
     private MyBatisCustomersDAO myBatisCustomersDAO;
 
-    public List<CustomerWithOrdersAndProductsDto> getAllCustomersWithTheirOrdersAndProducts() {
+    public List<CustomerWithOrdersAndProductsDto> myBatisGetAllCustomersWithTheirOrdersAndProducts() {
 
         List<CustomerWithOrdersAndProducts> customers = myBatisCustomersDAO.getCustomersWithOrdersAndProducts();
 
@@ -29,7 +29,7 @@ public class CustomerService {
 
                     // Customer has no orders
                     if (orders == null || orders.isEmpty()) {
-                        return Stream.of(buildCustomerDto(customer, null, null));
+                        return Stream.of(myBatisBuildCustomerDto(customer, null, null));
                     }
 
                     return orders.stream().flatMap(order -> {
@@ -37,19 +37,19 @@ public class CustomerService {
 
                         // Order has no products
                         if (products == null || products.isEmpty()) {
-                            return Stream.of(buildCustomerDto(customer, order, null));
+                            return Stream.of(myBatisBuildCustomerDto(customer, order, null));
                         }
 
                         // Normal case
                         return products.stream()
-                                .map(product -> buildCustomerDto(customer, order, product));
+                                .map(product -> myBatisBuildCustomerDto(customer, order, product));
                     });
                 })
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void Create(CustomerDto customerData) {
+    public void myBatisCreate(CustomerDto customerData) {
         Customer newCustomer = new Customer();
 
         newCustomer.setFirstname(customerData.getFirstName());
@@ -59,7 +59,7 @@ public class CustomerService {
         myBatisCustomersDAO.persist(newCustomer);
     }
 
-    private CustomerWithOrdersAndProductsDto buildCustomerDto(
+    private CustomerWithOrdersAndProductsDto myBatisBuildCustomerDto(
             CustomerWithOrdersAndProducts customer,
             CustomerWithOrdersAndProducts.OrderWithProducts order,
             CustomerWithOrdersAndProducts.ProductInfo product

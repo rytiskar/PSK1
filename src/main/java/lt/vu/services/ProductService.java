@@ -17,7 +17,7 @@ public class ProductService {
     @Inject
     private MyBatisProductsDAO myBatisProductsDAO;
 
-    public List<ProductDto> getAllProducts()
+    public List<ProductDto> myBatisGetAllProducts()
     {
         List<Product> products = myBatisProductsDAO.findAll();
 
@@ -37,7 +37,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void createProduct(ProductDto productData) {
+    public void myBatisCreateProduct(ProductDto productData) {
 
         Product newProduct = new Product();
 

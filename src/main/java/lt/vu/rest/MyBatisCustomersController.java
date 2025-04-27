@@ -23,7 +23,7 @@ public class MyBatisCustomersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomersWithTheirOrdersAndProducts() {
 
-        List<CustomerWithOrdersAndProductsDto> customers = customerService.getAllCustomersWithTheirOrdersAndProducts();
+        List<CustomerWithOrdersAndProductsDto> customers = customerService.myBatisGetAllCustomersWithTheirOrdersAndProducts();
 
         return Response.ok(customers).build();
     }
@@ -33,7 +33,7 @@ public class MyBatisCustomersController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(CustomerDto customerData) {
 
-        customerService.Create(customerData);
+        customerService.myBatisCreate(customerData);
 
         return Response.status(Response.Status.CREATED).build();
     }
