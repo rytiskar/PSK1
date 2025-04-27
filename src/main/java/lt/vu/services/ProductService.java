@@ -6,7 +6,6 @@ import lt.vu.rest.contracts.ProductDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class ProductService {
@@ -19,7 +18,7 @@ public class ProductService {
         Product product = productsDAO.findOne(id);
 
         if (product == null) {
-            throw new NotFoundException("Product not found for id: " + id);
+            return null;
         }
 
         ProductDto productDto = new ProductDto();

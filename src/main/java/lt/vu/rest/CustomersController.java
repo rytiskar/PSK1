@@ -32,28 +32,21 @@ public class CustomersController {
     @Inject
     private CustomerService customerService;
 
-/*    @Path("/{id}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getById(@PathParam("id") final Long id) {
+//    @Path("/{id}")
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getById(@PathParam("id") final Long id) {
+//
+//        return Response.ok(customerDto).build();
+//    }
 
-        return Response.ok(customerDto).build();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
-
-        return Response.ok(customerDtos).build();
-    }
-
-    @Path("/{id}/orders")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getCustomerOrders(@PathParam("id") final Long id) {
-
-        return Response.ok(orderDtos).build();
-    }*/
+//    @Path("/{id}/orders")
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getCustomerOrders(@PathParam("id") final Long id) {
+//
+//        return Response.ok(orderDtos).build();
+//    }
 
     @Path("/withOrdersAndProducts")
     @GET
@@ -69,23 +62,10 @@ public class CustomersController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Transactional
     public Response create(CustomerDto customerData) {
 
-        Customer newCustomer = new Customer();
+        customerService.createCustomer(customerData);
 
-        newCustomer.setFirstName(customerData.getFirstName());
-        newCustomer.setLastName(customerData.getLastName());
-        newCustomer.setEmail(customerData.getEmail());
-
-        customersDAO.persist(newCustomer);
-
-        // Update the DTO with the generated id
-        customerData.setId(newCustomer.getId());
-
-        return Response
-                .status(Response.Status.CREATED)
-                .entity(customerData)
-                .build();
+        return Response.status(Response.Status.CREATED).build();
     }
 }

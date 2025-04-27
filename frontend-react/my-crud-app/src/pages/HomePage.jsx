@@ -8,6 +8,8 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setRawData([]);
+
     const prefix = activeTab === 'myBatis' ? '/api/myBatis' : '/api';
 
     fetch(`http://localhost:8180/Shop${prefix}/customers/withOrdersAndProducts`)

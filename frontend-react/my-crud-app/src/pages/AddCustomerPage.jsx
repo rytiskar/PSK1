@@ -24,7 +24,6 @@ const AddCustomerPage = () => {
       },
       body: JSON.stringify(newCustomer),
     })
-      .then((res) => res.json())
       .then(() => navigate('/'))
       .catch((err) => console.error('Failed to create customer:', err));
   };

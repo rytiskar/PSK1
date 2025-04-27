@@ -11,7 +11,8 @@ import lt.vu.rest.contracts.ProductDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
+import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +33,10 @@ public class CustomerService {
     private ProductService productService;
 
 
-    public CustomerDto getCustomerById(Long id) {
+    private CustomerDto getCustomerById(Long id) {
         Customer customer = customersDAO.findOne(id);
         if (customer == null) {
-            throw new NotFoundException("Customer not found.");
+            return null;
         }
 
         CustomerDto customerDto = new CustomerDto();
@@ -47,11 +48,11 @@ public class CustomerService {
         return customerDto;
     }
 
-    public List<CustomerDto> getAllCustomers() {
+    private List<CustomerDto> getAllCustomers() {
         List<Customer> customers = customersDAO.findAll();
 
         if (customers == null || customers.isEmpty()) {
-            throw new NotFoundException("No customers found.");
+            return new ArrayList<>();
         }
 
         return customers.stream()
@@ -66,11 +67,11 @@ public class CustomerService {
                 .collect(Collectors.toList());
     }
 
-    public List<EOrderDto> getCustomerOrders(Long customerId) {
+    private List<EOrderDto> getCustomerOrders(Long customerId) {
         List<EOrder> orders = eOrdersDAO.findAll();
 
         if (orders == null || orders.isEmpty()) {
-            throw new NotFoundException("No orders found.");
+            return new ArrayList<>();
         }
         List<EOrderDto> orderDtos = orders.stream()
                 .filter(order -> order.getCustomer().getId().equals(customerId))
@@ -88,12 +89,13 @@ public class CustomerService {
                 .collect(Collectors.toList());
 
         if (orderDtos.isEmpty()) {
-            throw new NotFoundException("No orders found for this customer.");
+            return new ArrayList<>();
         }
 
         return orderDtos;
     }
 
+    @Transactional
     public void createCustomer(CustomerDto customerData) {
 
         Customer newCustomer = new Customer();
@@ -109,18 +111,23 @@ public class CustomerService {
 
         List<CustomerDto> customers = getAllCustomers();
 
-        List<CustomerWithOrdersAndProductsDto> customerWithOrdersAndProductsDtos = new ArrayList<>();
+        List<CustomerWithOrdersAndProductsDto> customersWithOrdersAndProducts = new ArrayList<>();
 
         for (CustomerDto customer : customers) {
-
             List<EOrderDto> orders = getCustomerOrders(customer.getId());
 
-            for (EOrderDto order : orders) {
+            if(orders.isEmpty()) {
+                CustomerWithOrdersAndProductsDto dto = createCustomerWithoutOrdersDto(customer);
 
+                customersWithOrdersAndProducts.add(dto);
+
+                continue;
+            }
+
+            for (EOrderDto order : orders) {
                 List<Long> orderProductIds = orderService.getOrderProductIds(order.getId());
 
                 for (Long orderProductId : orderProductIds) {
-
                     ProductDto product = productService.getProductById(orderProductId);
 
                     if (product != null) {
@@ -130,23 +137,39 @@ public class CustomerService {
                         dto.setLastName(customer.getLastName());
                         dto.setEmail(customer.getEmail());
                         dto.setOrderId(order.getId().toString());
-                        dto.setOrderDate(order.getDate() != null ? order.getDate().toString() : null);
+
+                        if (order.getDate() != null) {
+                            SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                            dto.setOrderDate(formatter.format(order.getDate()));
+                        } else {
+                            dto.setOrderDate(null);
+                        }
+
                         dto.setProductId(product.getId().toString());
                         dto.setProductName(product.getName());
                         dto.setProductPrice((String.valueOf(product.getPrice())));
 
-                        customerWithOrdersAndProductsDtos.add(dto);
+                        customersWithOrdersAndProducts.add(dto);
                     }
                 }
             }
         }
 
-        if (customerWithOrdersAndProductsDtos.isEmpty()) {
-            throw new NotFoundException("No orders or products found for customers.");
-        }
-
-        // Return the list of DTOs
-        return customerWithOrdersAndProductsDtos;
+        return customersWithOrdersAndProducts;
     }
 
+    private CustomerWithOrdersAndProductsDto createCustomerWithoutOrdersDto(CustomerDto customer) {
+        CustomerWithOrdersAndProductsDto dto = new CustomerWithOrdersAndProductsDto();
+        dto.setCustomerId(customer.getId());
+        dto.setFirstName(customer.getFirstName());
+        dto.setLastName(customer.getLastName());
+        dto.setEmail(customer.getEmail());
+        dto.setOrderId(null);
+        dto.setOrderDate(null);
+        dto.setProductId(null);
+        dto.setProductName(null);
+        dto.setProductPrice(null);
+
+        return dto;
+    }
 }
