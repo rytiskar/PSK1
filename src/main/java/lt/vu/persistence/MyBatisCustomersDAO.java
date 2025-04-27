@@ -25,14 +25,8 @@ public class MyBatisCustomersDAO {
         return mapper.selectByPrimaryKey(id);
     }
 
-    public List<Customer> findAll() {
-        CustomerMapper mapper = sqlSession.getMapper(CustomerMapper.class);
-        return mapper.selectAll();
-    }
-
     public List<CustomerWithOrdersAndProducts> getCustomersWithOrdersAndProducts() {
         CustomerMapper mapper = sqlSession.getMapper(CustomerMapper.class);
         return mapper.selectCustomersWithOrdersAndProducts();
     }
-
 }

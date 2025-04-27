@@ -11,7 +11,7 @@ public class EmailGenerator implements Serializable {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Thread.sleep(5000); // Simulating intensive task
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

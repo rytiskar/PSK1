@@ -1,6 +1,5 @@
 package lt.vu.persistence;
 
-import lt.vu.mybatis.dao.CustomerMapper;
 import lt.vu.mybatis.dao.ProductMapper;
 import lt.vu.mybatis.model.Product;
 import org.apache.ibatis.session.SqlSession;
