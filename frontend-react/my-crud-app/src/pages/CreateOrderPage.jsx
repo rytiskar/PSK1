@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const CreateOrderPage = () => {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetch('http://localhost:8180/Shop/api/products')
@@ -32,12 +33,8 @@ const CreateOrderPage = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     })
-      .then((res) => {
-        console.log("Response from server: ", res);
-        res.json()
-      })
-      .then(() => navigate('/'))
-      .catch((err) => console.error('Failed to create order:', err));
+    .then(() => navigate('/'))
+    .catch((err) => console.error('Failed to create order:', err));
   };
 
   return (

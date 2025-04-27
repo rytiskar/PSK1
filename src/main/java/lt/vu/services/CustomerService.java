@@ -32,22 +32,6 @@ public class CustomerService {
     @Inject
     private ProductService productService;
 
-
-    private CustomerDto getCustomerById(Long id) {
-        Customer customer = customersDAO.findOne(id);
-        if (customer == null) {
-            return null;
-        }
-
-        CustomerDto customerDto = new CustomerDto();
-        customerDto.setId(customer.getId());
-        customerDto.setFirstName(customer.getFirstName());
-        customerDto.setLastName(customer.getLastName());
-        customerDto.setEmail(customer.getEmail());
-
-        return customerDto;
-    }
-
     private List<CustomerDto> getAllCustomers() {
         List<Customer> customers = customersDAO.findAll();
 
@@ -93,18 +77,6 @@ public class CustomerService {
         }
 
         return orderDtos;
-    }
-
-    @Transactional
-    public void createCustomer(CustomerDto customerData) {
-
-        Customer newCustomer = new Customer();
-
-        newCustomer.setFirstName(customerData.getFirstName());
-        newCustomer.setLastName(customerData.getLastName());
-        newCustomer.setEmail(customerData.getEmail());
-
-        customersDAO.persist(newCustomer);
     }
 
     public List<CustomerWithOrdersAndProductsDto> getAllCustomersWithTheirOrdersAndProducts() {
@@ -156,6 +128,18 @@ public class CustomerService {
         }
 
         return customersWithOrdersAndProducts;
+    }
+
+    @Transactional
+    public void createCustomer(CustomerDto customerData) {
+
+        Customer newCustomer = new Customer();
+
+        newCustomer.setFirstName(customerData.getFirstName());
+        newCustomer.setLastName(customerData.getLastName());
+        newCustomer.setEmail(customerData.getEmail());
+
+        customersDAO.persist(newCustomer);
     }
 
     private CustomerWithOrdersAndProductsDto createCustomerWithoutOrdersDto(CustomerDto customer) {
