@@ -8,12 +8,18 @@ import org.apache.ibatis.session.SqlSession;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class MyBatisEOrdersDAO {
 
     @Inject
     private SqlSession sqlSession;
+
+    public List<EorderProduct> SelectAllOrderProducts() {
+        EorderProductMapper mapper = sqlSession.getMapper(EorderProductMapper.class);
+        return mapper.selectAll();
+    }
 
     public void persist(Eorder eorder) {
         EorderMapper mapper = sqlSession.getMapper(EorderMapper.class);

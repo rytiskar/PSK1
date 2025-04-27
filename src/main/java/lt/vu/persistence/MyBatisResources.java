@@ -18,7 +18,7 @@ public class MyBatisResources {
     private SqlSessionFactory produceSqlSessionFactory() {
         try {
             return new SqlSessionFactoryBuilder().build(
-                    Resources.getResourceAsStream("MyBatisConfig.xml")      // TODO: figure out where this config file is used
+                    Resources.getResourceAsStream("MyBatisConfig.xml")
             );
         } catch (IOException e) {
             throw new RuntimeException("MyBatisResources.produceSqlSessionFactory(): ", e);

@@ -17,7 +17,6 @@ const HomePage = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    // Transform flat list into nested structure
     const customerMap = {};
 
     rawData.forEach(item => {
@@ -99,8 +98,11 @@ const HomePage = () => {
   };
 
   const handleAddNewProduct = (orderId) => {
-    console.log('Add product to order', orderId);
-    // Example: navigate(`/my-page-to-add-product/${orderId}`)
+    console.log('Add products to order', orderId);
+
+    const prefix = activeTab === 'myBatis' ? '/myBatis' : '/jpa';
+
+    navigate(`${prefix}/add-products-to-order/${orderId}`);
   };
 
   return (

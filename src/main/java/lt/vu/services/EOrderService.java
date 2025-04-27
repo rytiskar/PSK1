@@ -35,6 +35,16 @@ public class EOrderService {
     @Setter @Getter
     private MyBatisProductsDAO myBatisProductsDAO;
 
+    public List<Long> getOrderProductIds(Long orderId) {
+
+        return myBatisEOrdersDAO.SelectAllOrderProducts()
+                .stream()
+                .filter(link -> link.getOrdersId().equals(orderId))
+                .map(EorderProduct::getProductsId)
+                .collect(Collectors.toList());
+
+    }
+
     @Transactional
     public void createOrder(EOrderDto eOrderData) {
 
@@ -70,14 +80,13 @@ public class EOrderService {
     }
 
     @Transactional
-    public void addProductToOrder(Long orderId, ProductDto product) {
+    public void addProductToOrder(Long orderId, Long productId) {
 
         Eorder existingOrder = myBatisEOrdersDAO.findOne(orderId);
         if (existingOrder == null) {
             throw new NotFoundException("Order with id " + orderId + " not found.");
         }
 
-        Long productId = product.getId();
         Product existingProduct = myBatisProductsDAO.findOne(productId);
         if (existingProduct == null) {
             throw new NotFoundException("Product with id " + productId + " not found.");

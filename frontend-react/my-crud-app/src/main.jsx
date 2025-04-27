@@ -21,6 +21,8 @@ import MyBatisOrderPage from './pages/MyBatisCreateOrder.jsx'
 import AddCustomerPage from './pages/AddCustomerPage.jsx'
 import MyBatisAddCustomerPage from './pages/MyBatisAddCustomerPage.jsx'
 
+import MyBatisAddProductsToOrderPage from './pages/MyBatisAddProductsToOrderPage.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -39,6 +41,8 @@ createRoot(document.getElementById('root')).render(
 
         <Route path="/jpa/add-customer" element={<AddCustomerPage />} />
         <Route path="/myBatis/add-customer" element={<MyBatisAddCustomerPage />} />
+
+        <Route path="/myBatis/add-products-to-order/:id" element={<MyBatisAddProductsToOrderPage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

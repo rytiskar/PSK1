@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @ApplicationScoped
 @Path("myBatis/orders")
@@ -16,6 +17,16 @@ public class MyBatisEOrdersController {
 
     @Inject
     private EOrderService orderService;
+
+    @Path("/{id}/products")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrderProducts(@PathParam("id") final Long orderId) {
+
+        List<Long> orderProductIds = orderService.getOrderProductIds(orderId);
+
+        return Response.ok(orderProductIds).build();
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -31,9 +42,9 @@ public class MyBatisEOrdersController {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addProduct(@PathParam("id") Long orderId, ProductDto product) {
+    public Response addProductToOrder(@PathParam("id") Long orderId, ProductDto product) {
 
-        orderService.addProductToOrder(orderId, product);
+        orderService.addProductToOrder(orderId, product.getId());
 
         return Response.ok().build();
     }
