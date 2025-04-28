@@ -7,13 +7,14 @@ import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.rest.contracts.CustomerWithOrdersAndProductsDto;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@ApplicationScoped
+@RequestScoped
 public class MyBatisCustomerService {
 
     @Inject

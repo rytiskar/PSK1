@@ -6,10 +6,11 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.mybatis.cdi.SessionFactoryProvider;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import java.io.IOException;
 
-@ApplicationScoped
+@RequestScoped
 public class MyBatisResources {
 
     @Produces

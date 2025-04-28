@@ -4,11 +4,12 @@ import lt.vu.entities.EOrder;
 import lt.vu.entities.Product;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class EOrdersDAO {
     @Inject
     private EntityManager em;

@@ -3,6 +3,7 @@ package lt.vu.persistence;
 import lt.vu.entities.Product;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -11,7 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class ProductsDAO {
     @Inject
     private EntityManager em;

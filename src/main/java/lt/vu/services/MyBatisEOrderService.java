@@ -12,6 +12,7 @@ import lt.vu.persistence.MyBatisProductsDAO;
 import lt.vu.rest.contracts.EOrderDto;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
@@ -19,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
+@RequestScoped
 public class MyBatisEOrderService {
 
     @Inject

@@ -6,10 +6,11 @@ import lt.vu.mybatis.model.CustomerWithOrdersAndProducts;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class MyBatisCustomersDAO {
 
     @Inject

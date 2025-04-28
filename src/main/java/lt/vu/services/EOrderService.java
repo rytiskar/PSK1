@@ -9,13 +9,14 @@ import lt.vu.persistence.ProductsDAO;
 import lt.vu.rest.contracts.EOrderDto;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.NotFoundException;
 import java.util.Date;
 import java.util.List;
 
-@ApplicationScoped
+@RequestScoped
 public class EOrderService {
 
     @Inject

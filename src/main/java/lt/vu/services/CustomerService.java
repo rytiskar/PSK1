@@ -10,6 +10,7 @@ import lt.vu.rest.contracts.EOrderDto;
 import lt.vu.rest.contracts.ProductDto;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
+@RequestScoped
 public class CustomerService {
 
     @Inject
