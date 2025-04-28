@@ -99,10 +99,11 @@ public class CustomerService {
             for (EOrderDto order : orders) {
                 List<Long> orderProductIds = orderService.getOrderProductIds(order.getId());
 
-                for (Long orderProductId : orderProductIds) {
-                    ProductDto product = productService.getProductById(orderProductId);
+                List<ProductDto> orderProducts = productService.getOrderProducts(orderProductIds);
 
-                    if (product != null) {
+                for (ProductDto orderProduct : orderProducts) {
+
+                    if (orderProduct != null) {
                         CustomerWithOrdersAndProductsDto dto = new CustomerWithOrdersAndProductsDto();
                         dto.setCustomerId(customer.getId());
                         dto.setFirstName(customer.getFirstName());
@@ -117,9 +118,9 @@ public class CustomerService {
                             dto.setOrderDate(null);
                         }
 
-                        dto.setProductId(product.getId().toString());
-                        dto.setProductName(product.getName());
-                        dto.setProductPrice((String.valueOf(product.getPrice())));
+                        dto.setProductId(orderProduct.getId().toString());
+                        dto.setProductName(orderProduct.getName());
+                        dto.setProductPrice((String.valueOf(orderProduct.getPrice())));
 
                         customersWithOrdersAndProducts.add(dto);
                     }

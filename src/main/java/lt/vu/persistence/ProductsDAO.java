@@ -5,7 +5,6 @@ import lt.vu.entities.Product;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -34,13 +33,10 @@ public class ProductsDAO {
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> productRoot = query.from(Product.class);
 
-        // Create the 'IN' condition dynamically
         Predicate inPredicate = productRoot.get("id").in(ids);
 
-        // Apply the condition to the query
         query.select(productRoot).where(inPredicate);
 
-        // Execute the query and get the results
         return em.createQuery(query).getResultList();
     }
 }
