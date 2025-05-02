@@ -28,5 +28,4 @@ public class CustomerWithOrdersAndProducts {
         private String productName;
         private double price;
     }
-
 }

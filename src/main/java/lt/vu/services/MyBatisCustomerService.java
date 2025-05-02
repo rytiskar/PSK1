@@ -6,13 +6,12 @@ import lt.vu.persistence.MyBatisCustomersDAO;
 import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.rest.contracts.CustomerWithOrdersAndProductsDto;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequestScoped
 public class MyBatisCustomerService {
@@ -21,32 +20,47 @@ public class MyBatisCustomerService {
     private MyBatisCustomersDAO myBatisCustomersDAO;
 
     public List<CustomerWithOrdersAndProductsDto> getAllCustomersWithTheirOrdersAndProducts() {
-
         List<CustomerWithOrdersAndProducts> customers = myBatisCustomersDAO.getCustomersWithOrdersAndProducts();
 
-        return customers.stream()
-                .flatMap(customer -> {
-                    List<CustomerWithOrdersAndProducts.OrderWithProducts> orders = customer.getOrders();
+        if (customers == null || customers.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-                    // Customer has no orders
-                    if (orders == null || orders.isEmpty()) {
-                        return Stream.of(buildCustomerDto(customer, null, null));
+        return customers.stream().map(customer -> {
+            CustomerWithOrdersAndProductsDto dto = new CustomerWithOrdersAndProductsDto();
+            dto.setCustomerId(customer.getCustomerId());
+            dto.setFirstName(customer.getCustomerFirstName());
+            dto.setLastName(customer.getCustomerLastName());
+            dto.setEmail(customer.getCustomerEmail());
+
+            List<CustomerWithOrdersAndProducts.OrderWithProducts> orders = customer.getOrders();
+            if (orders != null) {
+                List<CustomerWithOrdersAndProductsDto.Order> orderDtos = orders.stream().map(order -> {
+                    CustomerWithOrdersAndProductsDto.Order orderDto = new CustomerWithOrdersAndProductsDto.Order();
+                    orderDto.setOrderId(order.getOrderId() != null ? order.getOrderId().toString() : null);
+                    orderDto.setOrderDate(order.getOrderDate() != null ? order.getOrderDate().toString() : null);
+
+                    List<CustomerWithOrdersAndProducts.ProductInfo> products = order.getProducts();
+                    if (products != null) {
+                        List<CustomerWithOrdersAndProductsDto.Product> productDtos = products.stream().map(product -> {
+                            CustomerWithOrdersAndProductsDto.Product productDto = new CustomerWithOrdersAndProductsDto.Product();
+                            productDto.setProductId(product.getProductId() != null ? product.getProductId().toString() : null);
+                            productDto.setProductName(product.getProductName());
+                            productDto.setProductPrice(Double.toString(product.getPrice()));
+                            return productDto;
+                        }).collect(Collectors.toList());
+
+                        orderDto.setProducts(productDtos);
                     }
 
-                    return orders.stream().flatMap(order -> {
-                        List<CustomerWithOrdersAndProducts.ProductInfo> products = order.getProducts();
+                    return orderDto;
+                }).collect(Collectors.toList());
 
-                        // Order has no products
-                        if (products == null || products.isEmpty()) {
-                            return Stream.of(buildCustomerDto(customer, order, null));
-                        }
+                dto.setOrders(orderDtos);
+            }
 
-                        // Normal case
-                        return products.stream()
-                                .map(product -> buildCustomerDto(customer, order, product));
-                    });
-                })
-                .collect(Collectors.toList());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @Transactional
@@ -58,30 +72,5 @@ public class MyBatisCustomerService {
         newCustomer.setEmail(customerData.getEmail());
 
         myBatisCustomersDAO.persist(newCustomer);
-    }
-
-    private CustomerWithOrdersAndProductsDto buildCustomerDto(
-            CustomerWithOrdersAndProducts customer,
-            CustomerWithOrdersAndProducts.OrderWithProducts order,
-            CustomerWithOrdersAndProducts.ProductInfo product
-    ) {
-        CustomerWithOrdersAndProductsDto dto = new CustomerWithOrdersAndProductsDto();
-        dto.setCustomerId(customer.getCustomerId());
-        dto.setFirstName(customer.getCustomerFirstName());
-        dto.setLastName(customer.getCustomerLastName());
-        dto.setEmail(customer.getCustomerEmail());
-
-        if (order != null) {
-            dto.setOrderId(order.getOrderId().toString());
-            dto.setOrderDate(order.getOrderDate() != null ? order.getOrderDate().toString() : null);
-        }
-
-        if (product != null) {
-            dto.setProductId(product.getProductId().toString());
-            dto.setProductName(product.getProductName());
-            dto.setProductPrice(Double.toString(product.getPrice()));
-        }
-
-        return dto;
     }
 }

@@ -24,7 +24,7 @@ public class CustomersDAO {
     }
 
     public List<Customer> findAll() {
-        return em.createQuery("SELECT c FROM Customer c", Customer.class)
+        return em.createQuery("SELECT DISTINCT c FROM Customer c", Customer.class)
                 .getResultList();
     }
 }
