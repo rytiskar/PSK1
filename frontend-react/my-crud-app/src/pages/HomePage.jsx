@@ -2,86 +2,68 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-  const [rawData, setRawData] = useState([]);
   const [groupedCustomers, setGroupedCustomers] = useState([]);
   const [activeTab, setActiveTab] = useState('jpa');
   const navigate = useNavigate();
 
   useEffect(() => {
-    setRawData([]);
+    setGroupedCustomers([]); // Clear previous data
 
     const prefix = activeTab === 'myBatis' ? '/api/myBatis' : '/api';
 
     fetch(`http://localhost:8180/Shop${prefix}/customers/withOrdersAndProducts`)
       .then((res) => res.json())
-      .then((data) => setRawData(data))
+      .then((data) => {
+        // Group the data by customer and their orders/products
+        const customerMap = {};
+
+        data.forEach((customer) => {
+          if (!customerMap[customer.customerId]) {
+            customerMap[customer.customerId] = {
+              customerId: customer.customerId,
+              firstName: customer.firstName,
+              lastName: customer.lastName,
+              email: customer.email,
+              orders: customer.orders.map((order) => ({
+                orderId: order.orderId,
+                orderDate: order.orderDate,
+                products: order.products.map((product) => ({
+                  productId: product.productId,
+                  productName: product.productName,
+                  productPrice: product.productPrice,
+                })),
+              })),
+            };
+          }
+        });
+
+        setGroupedCustomers(Object.values(customerMap));
+      })
       .catch((err) => console.error('Failed to fetch customers:', err));
   }, [activeTab]);
 
-  useEffect(() => {
-    const customerMap = {};
-
-    rawData.forEach(item => {
-      if (!customerMap[item.customerId]) {
-        customerMap[item.customerId] = {
-          customerId: item.customerId,
-          firstName: item.firstName,
-          lastName: item.lastName,
-          email: item.email,
-          orders: {}
-        };
-      }
-
-      if (item.orderId) {
-        if (!customerMap[item.customerId].orders[item.orderId]) {
-          customerMap[item.customerId].orders[item.orderId] = {
-            orderId: item.orderId,
-            orderDate: item.orderDate,
-            products: []
-          };
-        }
-
-        if (item.productId) {
-          customerMap[item.customerId].orders[item.orderId].products.push({
-            productId: item.productId,
-            productName: item.productName,
-            productPrice: item.productPrice
-          });
-        }
-      }
-    });
-
-    // Convert maps to arrays
-    const customersArray = Object.values(customerMap).map(customer => ({
-      ...customer,
-      orders: Object.values(customer.orders)
-    }));
-
-    setGroupedCustomers(customersArray);
-  }, [rawData]);
-
   const formatDate = (dateString) => {
     if (!dateString) return '';
-  
-    const parts = dateString.split(' '); 
+
+    const parts = dateString.split(' ');
     if (parts.length < 6) return '';
-  
+
     const day = parts[2];
     const monthStr = parts[1];
     const year = parts[5];
-  
+
     const monthMap = {
       Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
       Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
     };
-  
+
     const month = monthMap[monthStr];
-  
+
     if (!month) return '';
-  
+
     return `${year}-${month}-${day}`;
   };
-  
+
   const formatPrice = (price) => {
     if (price == null) return '';
     return `${parseFloat(price).toFixed(2)} Eur`;
@@ -117,15 +99,15 @@ const HomePage = () => {
           MyBatis
         </button>
       </div>
-  
+
       <h1 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.8rem' }}>
-        Customers, Orders and Products
+        Customers, Orders, and Products
       </h1>
-  
+
       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
         <button onClick={handleAddNewCustomer}>➕ Add New Customer</button>
       </div>
-  
+
       <div
         style={{
           display: 'flex',
@@ -148,14 +130,18 @@ const HomePage = () => {
             }}
           >
             <div style={{ marginBottom: '0.8rem', textAlign: 'left' }}>
-              <h2 style={{ margin: '0.3rem 0' }}>{customer.firstName} {customer.lastName}</h2>
+              <h2 style={{ margin: '0.3rem 0' }}>
+                {customer.firstName} {customer.lastName}
+              </h2>
               <p style={{ margin: '0.2rem 0', fontSize: '0.9rem' }}>Email: {customer.email}</p>
-              <button onClick={() => handleAddNewOrder(customer.customerId)} style={{ marginTop: '0.5rem' }}>➕ Add Order</button>
+              <button onClick={() => handleAddNewOrder(customer.customerId)} style={{ marginTop: '0.5rem' }}>
+                ➕ Add Order
+              </button>
             </div>
-  
+
             {customer.orders.length > 0 ? (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                {customer.orders.map(order => (
+                {customer.orders.map((order) => (
                   <div
                     key={order.orderId}
                     style={{
@@ -169,10 +155,14 @@ const HomePage = () => {
                   >
                     <div style={{ textAlign: 'left', marginBottom: '0.5rem' }}>
                       <h3 style={{ margin: '0.2rem 0' }}>Order #{order.orderId}</h3>
-                      <p style={{ margin: '0.2rem 0', fontSize: '0.85rem' }}>Date: {formatDate(order.orderDate)}</p>
-                      <button onClick={() => handleAddNewProduct(order.orderId)} style={{ marginTop: '0.3rem' }}>➕ Add Product</button>
+                      <p style={{ margin: '0.2rem 0', fontSize: '0.85rem' }}>
+                        Date: {formatDate(order.orderDate)}
+                      </p>
+                      <button onClick={() => handleAddNewProduct(order.orderId)} style={{ marginTop: '0.3rem' }}>
+                        ➕ Add Product
+                      </button>
                     </div>
-  
+
                     <div
                       style={{
                         display: 'flex',
@@ -182,7 +172,7 @@ const HomePage = () => {
                         justifyContent: 'flex-start',
                       }}
                     >
-                      {order.products.map(product => (
+                      {order.products.map((product) => (
                         <div
                           key={product.productId}
                           style={{
