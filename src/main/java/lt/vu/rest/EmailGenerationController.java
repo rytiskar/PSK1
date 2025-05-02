@@ -2,8 +2,6 @@ package lt.vu.rest;
 
 import lt.vu.services.EmailGenerator;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;

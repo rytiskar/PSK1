@@ -50,7 +50,14 @@ public class CustomerService {
                 List<CustomerWithOrdersAndProductsDto.Order> orderDtos = customer.getOrders().stream().map(order -> {
                     CustomerWithOrdersAndProductsDto.Order orderDto = new CustomerWithOrdersAndProductsDto.Order();
                     orderDto.setOrderId(String.valueOf(order.getId()));
-                    orderDto.setOrderDate(order.getDate().toString());
+
+                    if (order.getDate() != null) {
+                        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                        orderDto.setOrderDate(formatter.format(order.getDate()));
+                    } else {
+                        orderDto.setOrderDate(null);
+                    }
+
                     if (order.getProducts() != null) {
                         List<CustomerWithOrdersAndProductsDto.Product> productDtos = order.getProducts().stream().map(product -> {
                             CustomerWithOrdersAndProductsDto.Product productDto = new CustomerWithOrdersAndProductsDto.Product();
