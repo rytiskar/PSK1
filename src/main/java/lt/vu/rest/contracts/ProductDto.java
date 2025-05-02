@@ -12,4 +12,6 @@ public class ProductDto {
     public String name;
 
     public double price;
+
+    public Long version;
 }

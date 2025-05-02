@@ -2,10 +2,10 @@ package lt.vu.persistence;
 
 import lt.vu.entities.Product;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -39,5 +39,14 @@ public class ProductsDAO {
         query.select(productRoot).where(inPredicate);
 
         return em.createQuery(query).getResultList();
+    }
+
+    public Product merge(Product product){
+        try {
+            return em.merge(product);
+        } catch (OptimisticLockException e) {
+            System.err.println("Optimistic locking failed for product with id: " + product.getId());
+            throw e;
+        }
     }
 }

@@ -31,6 +31,7 @@ public class ProductService {
         productDto.setId(product.getId());
         productDto.setName(product.getProductName());
         productDto.setPrice(product.getPrice());
+        productDto.setVersion(product.getVersion());
 
         return productDto;
     }
@@ -55,6 +56,27 @@ public class ProductService {
         productsDAO.persist(newProduct);
 
         productData.setId(newProduct.getId());
+    }
+
+    @Transactional
+    public ProductDto updateProduct(ProductDto productData) {
+
+        Product detached = new Product();
+
+        detached.setId(productData.getId());
+        detached.setProductName(productData.getName());
+        detached.setPrice(productData.getPrice());
+        detached.setVersion(productData.getVersion());
+
+        Product updated = productsDAO.merge(detached);
+
+        ProductDto updatedProductDto = new ProductDto();
+        updatedProductDto.setId(updated.getId());
+        updatedProductDto.setName(updated.getProductName());
+        updatedProductDto.setPrice(updated.getPrice());
+        updatedProductDto.setVersion(updated.getVersion());
+
+        return updatedProductDto;
     }
 
     public List<ProductDto> getOrderProducts(List<Long> orderProductIds) {

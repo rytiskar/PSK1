@@ -23,6 +23,9 @@ public class Product {
     @Basic(optional = false)
     private double price;
 
+    @Version
+    private Long version;
+
     @ManyToMany(mappedBy = "products")
     private List<EOrder> orders;
 }

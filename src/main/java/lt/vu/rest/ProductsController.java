@@ -25,6 +25,16 @@ public class ProductsController {
         return Response.ok(products).build();
     }
 
+    @Path("/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getOrderProducts(@PathParam("id") final Long id) {
+
+        ProductDto product = productService.getProductById(id);
+
+        return Response.ok(product).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,5 +43,15 @@ public class ProductsController {
         productService.createProduct(productData);
 
         return Response.status(Response.Status.CREATED).build();
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(ProductDto productData) {
+
+        ProductDto product = productService.updateProduct(productData);
+
+        return Response.ok(product).build();
     }
 }
