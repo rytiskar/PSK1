@@ -79,14 +79,16 @@ public class ProductService {
         return updatedProductDto;
     }
 
-    public List<ProductDto> getOrderProducts(List<Long> orderProductIds) {
-        List<Product> products = productsDAO.findAll(orderProductIds);
+    @Transactional
+    public void deleteProduct(Long id) {
 
-        if (products == null || products.isEmpty()) {
-            return new ArrayList<>();
+        Product existinProduct = productsDAO.findOne(id);
+
+        if (existinProduct == null) {
+            return;
         }
 
-        return mapProductsToDtos(products);
+        productsDAO.remove(existinProduct);
     }
 
     private List<ProductDto> mapProductsToDtos(List<Product> products) {

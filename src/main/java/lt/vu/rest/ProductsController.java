@@ -60,4 +60,14 @@ public class ProductsController {
             return Response.status(Response.Status.CONFLICT).build();
         }
     }
+
+    @Path("/{id}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@PathParam("id") final Long id) {
+
+        productService.deleteProduct(id);
+
+        return Response.status(Response.Status.OK).build();
+    }
 }

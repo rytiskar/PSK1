@@ -49,4 +49,8 @@ public class ProductsDAO {
             throw e;
         }
     }
+
+    public void remove(Product product){
+        em.remove(product);
+    }
 }
