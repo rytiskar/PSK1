@@ -61,6 +61,8 @@ function ProductManagementPage() {
           </tbody>
         </table>
       )}
+
+      <button onClick={() => navigate('/add-product')}>➕ Add New Product</button>
     </div>
   );
 }
