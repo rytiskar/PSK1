@@ -73,43 +73,53 @@ function ProductEditPage() {
   if (!product) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h2>Edit Product</h2>
+    <div style={{ padding: '2rem' }}>
+      <h1>Edit Product</h1>
 
       {showConflictPrompt && (
-        <div style={{ backgroundColor: '#ffe0e0', padding: '10px', marginBottom: '12px' }}>
-          <strong>Conflict detected:</strong> This product has been updated by someone else.<br />
+        <div style={{ backgroundColor: '#ffe0e0', padding: '1rem', marginBottom: '1rem' }}>
+          <strong>Conflict detected:</strong> This product was updated by someone else.
+          <br />
           Do you still want to overwrite the changes?
-          <div style={{ marginTop: '10px' }}>
+          <div style={{ marginTop: '1rem' }}>
             <button onClick={handleForceOverwrite}>Yes, Overwrite</button>{' '}
             <button onClick={() => navigate('/manage-products')}>Cancel</button>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name: </label>
+      <form onSubmit={handleSubmit} style={{ maxWidth: '500px', margin: '0 auto' }}>
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="name" style={{ display: 'block', fontWeight: 'bold' }}>Product Name:</label>
           <input
+            id="name"
             name="name"
+            type="text"
             value={product.name}
             onChange={handleChange}
             required
+            style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
-        <div>
-          <label>Price: </label>
+
+        <div style={{ marginBottom: '1rem' }}>
+          <label htmlFor="price" style={{ display: 'block', fontWeight: 'bold' }}>Price (EUR):</label>
           <input
+            id="price"
             name="price"
             type="number"
             step="0.01"
             value={product.price}
             onChange={handleChange}
             required
+            style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
-        <button type="submit">Save</button>{' '}
-        <button type="button" onClick={() => navigate(`/manage-products`)}>Cancel</button>
+
+        <div style={{ textAlign: 'center' }}>
+          <button type="submit">Save</button>{' '}
+          <button type="button" onClick={() => navigate('/manage-products')}>Cancel</button>
+        </div>
       </form>
     </div>
   );
