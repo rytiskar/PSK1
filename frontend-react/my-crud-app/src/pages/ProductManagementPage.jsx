@@ -16,8 +16,14 @@ function ProductManagementPage() {
       .catch((err) => setError(err.message));
   }, []);
 
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
   return (
     <div>
+      <button onClick={handleGoHome} style={{ marginBottom: '1rem' }}>Home</button>
+
       <h2>Product Management</h2>
 
       {error && <div style={{ color: 'red' }}>Error: {error}</div>}

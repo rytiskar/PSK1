@@ -89,6 +89,10 @@ const HomePage = () => {
     navigate(`${prefix}/add-products-to-order/${orderId}`);
   };
 
+  const handleManageProducts = () => {
+    navigate('/manage-products');
+  };
+
   return (
     <div style={{ padding: '1.5rem', maxWidth: '1600px', margin: '0 auto' }}>
       <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
@@ -106,6 +110,7 @@ const HomePage = () => {
 
       <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
         <button onClick={handleAddNewCustomer}>➕ Add New Customer</button>
+        <button onClick={handleManageProducts} style={{ marginLeft: '1rem' }}>Manage Products</button>
       </div>
 
       <div
