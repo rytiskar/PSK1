@@ -9,4 +9,8 @@
     <interceptors>
         <class>lt.vu.interceptors.MethodLogger</class>
     </interceptors>
+
+    <alternatives>
+        <!--<class>lt.vu.services.RandomEmailGenerator</class>-->
+    </alternatives>
 </beans>

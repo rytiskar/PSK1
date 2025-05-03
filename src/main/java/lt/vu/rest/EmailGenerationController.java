@@ -1,8 +1,9 @@
 package lt.vu.rest;
 
-import lt.vu.services.EmailGenerator;
+import lt.vu.interfaces.IEmailGeneratorStrategy;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
@@ -13,14 +14,15 @@ import java.util.concurrent.ExecutionException;
 @Path("/email")
 public class EmailGenerationController implements Serializable {
 
-    private CompletableFuture<String> emailGenerationTask;
+    @Inject
+    private IEmailGeneratorStrategy emailGeneratorService;
 
-    private final EmailGenerator emailGenerator = new EmailGenerator();
+    private CompletableFuture<String> emailGenerationTask;
 
     @POST
     @Path("/start")
     public Response startGeneration() {
-        emailGenerationTask = emailGenerator.generateEmail();
+        emailGenerationTask = emailGeneratorService.generateEmail();
         return Response.accepted("Email generation started").build();
     }
 

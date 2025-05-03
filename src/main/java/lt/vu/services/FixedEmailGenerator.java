@@ -1,11 +1,13 @@
 package lt.vu.services;
 
+import lt.vu.interfaces.IEmailGeneratorStrategy;
+
 import javax.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 @ApplicationScoped
-public class EmailGenerator implements Serializable {
+public class FixedEmailGenerator implements Serializable, IEmailGeneratorStrategy {
 
     public CompletableFuture<String> generateEmail() {
 
@@ -15,7 +17,7 @@ public class EmailGenerator implements Serializable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            return "generated."+this.toString()+"@example.com";
+            return "fixed@example.com";
         });
     }
 }
