@@ -5,6 +5,7 @@ import lt.vu.services.ProductService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.OptimisticLockException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -50,8 +51,13 @@ public class ProductsController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response update(ProductDto productData) {
 
-        ProductDto product = productService.updateProduct(productData);
-
-        return Response.ok(product).build();
+        try
+        {
+            ProductDto product = productService.updateProduct(productData);
+            return Response.ok(product).build();
+        } catch (OptimisticLockException e)
+        {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
     }
 }

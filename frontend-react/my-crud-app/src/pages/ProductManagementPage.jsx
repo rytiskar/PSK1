@@ -43,7 +43,7 @@ function ProductManagementPage() {
               <tr key={product.id}>
                 <td>{product.id}</td>
                 <td>{product.name}</td>
-                <td>${product.price.toFixed(2)}</td>
+                <td>{product.price.toFixed(2)} Eur</td>
                 <td>
                   <button onClick={() => navigate(`/edit/${product.id}`)}>
                     Edit
