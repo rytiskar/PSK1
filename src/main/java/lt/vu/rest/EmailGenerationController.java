@@ -2,14 +2,14 @@ package lt.vu.rest;
 
 import lt.vu.services.EmailGenerator;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-@SessionScoped
+@ApplicationScoped
 @Path("/email")
 public class EmailGenerationController implements Serializable {
 

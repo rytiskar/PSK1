@@ -1,13 +1,9 @@
 package lt.vu.services;
 
 import lt.vu.entities.Customer;
-import lt.vu.entities.EOrder;
 import lt.vu.persistence.CustomersDAO;
-import lt.vu.persistence.EOrdersDAO;
 import lt.vu.rest.contracts.CustomerDto;
 import lt.vu.rest.contracts.CustomerWithOrdersAndProductsDto;
-import lt.vu.rest.contracts.EOrderDto;
-import lt.vu.rest.contracts.ProductDto;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -22,15 +18,6 @@ public class CustomerService {
 
     @Inject
     private CustomersDAO customersDAO;
-
-    @Inject
-    private EOrdersDAO eOrdersDAO;
-
-    @Inject
-    private EOrderService orderService;
-
-    @Inject
-    private ProductService productService;
 
     public List<CustomerWithOrdersAndProductsDto> getAllCustomersWithTheirOrdersAndProducts() {
         List<Customer> customers = customersDAO.findAll();

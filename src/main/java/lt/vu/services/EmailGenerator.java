@@ -1,8 +1,6 @@
 package lt.vu.services;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
