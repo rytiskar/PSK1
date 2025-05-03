@@ -54,7 +54,6 @@ function ProductManagementPage() {
                   <button onClick={() => navigate(`/edit/${product.id}`)}>
                     Edit
                   </button>{' '}
-                  <button>Delete</button>
                 </td>
               </tr>
             ))}
