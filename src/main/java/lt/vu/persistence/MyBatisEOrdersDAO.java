@@ -6,7 +6,6 @@ import lt.vu.mybatis.model.Eorder;
 import lt.vu.mybatis.model.EorderProduct;
 import org.apache.ibatis.session.SqlSession;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
