@@ -1,6 +1,7 @@
 package lt.vu.persistence;
 
 import lt.vu.entities.Customer;
+import lt.vu.interceptors.LoggedInvocation;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Specializes;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RequestScoped
 @Specializes
+@LoggedInvocation
 public class LoggingCustomersDAO extends CustomersDAO {
     @Inject
     private EntityManager em;
