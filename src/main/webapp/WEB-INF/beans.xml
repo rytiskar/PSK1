@@ -9,6 +9,10 @@
     <interceptors>
         <class>lt.vu.interceptors.MethodLogger</class>
     </interceptors>
+<!--
+    <decorators>
+        <class>lt.vu.persistence.CustomersDecoratorDAO</class>
+    </decorators>-->
 
     <alternatives>
         <!--<class>lt.vu.services.RandomEmailGenerator</class>-->
